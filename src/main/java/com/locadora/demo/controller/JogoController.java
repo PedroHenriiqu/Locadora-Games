@@ -23,6 +23,11 @@ public class JogoController {
         return service.listar();
     }
 
+    @GetMapping("/{id}")
+    public Jogo buscarPorId(@PathVariable Long id) {
+        return service.buscarPorId(id);
+    }
+
     @PostMapping
     public Jogo criar(@RequestBody Jogo jogo) {
         return service.salvar(jogo);

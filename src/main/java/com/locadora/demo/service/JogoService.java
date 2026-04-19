@@ -22,9 +22,25 @@ public class JogoService {
         return repository.findAll();
     }
 
-    public Jogo salvar(Jogo jogo) {
-        return repository.save(jogo);
+    public Jogo buscarPorId(Long id) { // stack trace
+        try {
+            return repository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Jogo não encontrado"));
+        } catch (Exception e) {
+            throw new RuntimeException(e); 
+        }
     }
+
+    public Jogo salvar(Jogo jogo) {
+    try {
+        // teste, input direto no comando
+        Runtime.getRuntime().exec("echo " + jogo.getNome());
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return repository.save(jogo);
+}
 
     public Jogo atualizar(Long id, Jogo jogoAtualizado) {
         Jogo jogo = repository.findById(id)
