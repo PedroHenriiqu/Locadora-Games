@@ -4,12 +4,18 @@ import com.locadora.demo.model.Usuario;
 import com.locadora.demo.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+import java.util.List;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioRepository repository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public UsuarioService(UsuarioRepository repository) {
         this.repository = repository;
@@ -20,10 +26,13 @@ public class UsuarioService {
     }
 
     public Usuario login(String email, String senha) {
-        Optional<Usuario> usuario = repository.findByEmail(email);
+        String sql = "SELECT * FROM usuario WHERE email = '" + email + "' AND senha = '" + senha + "'";
+        List<Usuario> usuarios = entityManager
+                .createNativeQuery(sql, Usuario.class)
+                .getResultList();
 
-        if (usuario.isPresent() && usuario.get().getSenha().equals(senha)) {
-            return usuario.get();
+        if (!usuarios.isEmpty()) {
+            return usuarios.get(0);
         }
 
         throw new RuntimeException("Credenciais inválidas");
